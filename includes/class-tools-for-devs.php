@@ -298,8 +298,10 @@ class Tools_For_Devs
         // Shortcode name must be the same as in shortcode_atts() third parameter.
         $this->loader->add_shortcode($this->get_plugin_name() . '-shortcode', $plugin_public, 'tools_for_devs_shortcode_func');
 
-        $this->loader->add_shortcode($this->get_plugin_name() . '-migration-sql-tool', $plugin_public, 'tools_for_devs_shortcode_wp_migration_sql_tool');
-        $this->loader->add_shortcode($this->get_plugin_name() . '-db-prefix-tool', $plugin_public, 'tools_for_devs_shortcode_wp_db_prefix_tool');
+        $this->loader->add_shortcode($this->get_plugin_name() . '-migration-sql', $plugin_public, 'tools_for_devs_shortcode_wp_migration_sql_tool');
+        $this->loader->add_shortcode($this->get_plugin_name() . '-db-prefix', $plugin_public, 'tools_for_devs_shortcode_wp_db_prefix_tool');
+        $this->loader->add_shortcode($this->get_plugin_name() . '-plugin-header-generator', $plugin_public, 'tools_for_devs_shortcode_wp_plugin_header_generator');
+        $this->loader->add_shortcode($this->get_plugin_name() . '-delete-products-sql', $plugin_public, 'tools_for_devs_shortcode_wp_wc_delete_products_sql_tool');
     }
 
     /**

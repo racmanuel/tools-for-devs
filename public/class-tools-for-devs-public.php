@@ -78,6 +78,8 @@ class Tools_For_Devs_Public
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/tools-for-devs-public.css', array(), $this->version, 'all');
 		wp_register_style($this->plugin_name . '-wp-migration-sql-tool', plugin_dir_url(__FILE__) . 'css/wp-migration-sql-tool.css', array(), $this->version, 'all');
 		wp_register_style($this->plugin_name . '-wp-db-prefix-tool', plugin_dir_url(__FILE__) . 'css/wp-db-prefix-tool.css', array(), $this->version, 'all');
+		wp_register_style($this->plugin_name . '-wp-plugin-header-generator', plugin_dir_url(__FILE__) . 'css/wp-plugin-header-generator.css', array(), $this->version, 'all');
+		wp_register_style($this->plugin_name . '-wc-delete-products-sql-tool', plugin_dir_url(__FILE__) . 'css/wc-delete-products-sql-tool.css', array(), $this->version, 'all');
 	}
 
 	/**
@@ -91,6 +93,8 @@ class Tools_For_Devs_Public
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/tools-for-devs-public.js', array('jquery'), $this->version, true);
 		wp_register_script($this->plugin_name . '-wp-migration-sql-tool', plugin_dir_url(__FILE__) . 'js/wp-migration-sql-tool.js', array('jquery', 'wp-i18n'), $this->version, true);
 		wp_register_script($this->plugin_name . '-wp-db-prefix-tool', plugin_dir_url(__FILE__) . 'js/wp-db-prefix-tool.js', array('jquery', 'wp-i18n'), $this->version, true);
+		wp_register_script($this->plugin_name . '-wp-plugin-header-generator', plugin_dir_url(__FILE__) . 'js/wp-plugin-header-generator.js', array('jquery', 'wp-i18n'), $this->version, true);
+		wp_register_script($this->plugin_name . '-wc-delete-products-sql-tool', plugin_dir_url(__FILE__) . 'js/wc-delete-products-sql-tool.js', array('jquery', 'wp-i18n'), $this->version, true);
 	}
 
 	/**
@@ -359,6 +363,272 @@ class Tools_For_Devs_Public
 		</div>
 		<?php
 
+		return ob_get_clean();
+	}
+
+
+	public function tools_for_devs_shortcode_wp_plugin_header_generator($atts, $content = '', $tag = ''): string
+	{
+
+		$atts = shortcode_atts(
+			array(
+				'plugin_name' => '',
+				'plugin_uri' => '',
+				'version' => '1.0.0',
+				'text_domain' => '',
+				'domain_path' => '/languages',
+				'license' => 'GPL v2 or later',
+				'license_uri' => 'https://www.gnu.org/licenses/gpl-2.0.html',
+				'author' => '',
+				'author_uri' => '',
+				'description' => '',
+				'network' => 'false',
+			),
+			$atts,
+			$tag
+		);
+
+		// Code editor (WordPress built-in CodeMirror).
+		wp_enqueue_code_editor(
+			array(
+				'type' => 'text/x-php',
+				'codemirror' => array(
+					'lineNumbers' => true,
+					'lineWrapping' => true,
+					'readOnly' => true,
+				),
+			)
+		);
+
+		wp_enqueue_style($this->plugin_name . '-wp-plugin-header-generator');
+		wp_enqueue_script($this->plugin_name . '-wp-plugin-header-generator');
+
+		$uid = 'phg-' . wp_generate_uuid4();
+
+		$plugin_name = esc_attr($atts['plugin_name']);
+		$plugin_uri = esc_attr($atts['plugin_uri']);
+		$version = esc_attr($atts['version']);
+		$text_domain = esc_attr($atts['text_domain']);
+		$domain_path = esc_attr($atts['domain_path']);
+		$license = esc_attr($atts['license']);
+		$license_uri = esc_attr($atts['license_uri']);
+		$author = esc_attr($atts['author']);
+		$author_uri = esc_attr($atts['author_uri']);
+		$description = esc_attr($atts['description']);
+		$network = esc_attr($atts['network']);
+
+		ob_start();
+		?>
+		<div class="tfd-phg-wrap" id="<?php echo esc_attr($uid); ?>" data-tfd-phg="1">
+
+			<p class="tfd-phg-desc">
+				<?php echo esc_html__(
+					'Generate a WordPress plugin header (plugin file comment block). Fill the fields, then click “Generate header” to copy the result.',
+					'tools-for-devs'
+				); ?>
+			</p>
+
+			<div class="tfd-phg-row">
+				<div class="tfd-phg-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-name"><?php echo esc_html__('Plugin Name', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-name" type="text" value="<?php echo $plugin_name; ?>"
+						placeholder="<?php echo esc_attr__('My Plugin', 'tools-for-devs'); ?>">
+				</div>
+
+				<div class="tfd-phg-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-uri"><?php echo esc_html__('Plugin URL', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-uri" type="text" value="<?php echo $plugin_uri; ?>"
+						placeholder="https://example.com/my-plugin">
+				</div>
+
+				<div class="tfd-phg-field tfd-phg-field--sm">
+					<label
+						for="<?php echo esc_attr($uid); ?>-version"><?php echo esc_html__('Version', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-version" type="text" value="<?php echo $version; ?>"
+						placeholder="1.0.0">
+				</div>
+			</div>
+
+			<div class="tfd-phg-row">
+				<div class="tfd-phg-field tfd-phg-field--wide">
+					<label
+						for="<?php echo esc_attr($uid); ?>-desc"><?php echo esc_html__('Description', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-desc" type="text" value="<?php echo $description; ?>"
+						placeholder="<?php echo esc_attr__('A short description of what your plugin does', 'tools-for-devs'); ?>">
+				</div>
+			</div>
+
+			<div class="tfd-phg-row">
+				<div class="tfd-phg-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-author"><?php echo esc_html__('Author', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-author" type="text" value="<?php echo $author; ?>"
+						placeholder="John Doe">
+				</div>
+
+				<div class="tfd-phg-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-author-uri"><?php echo esc_html__('Author URL', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-author-uri" type="text" value="<?php echo $author_uri; ?>"
+						placeholder="https://example.com">
+				</div>
+
+				<div class="tfd-phg-field tfd-phg-field--sm">
+					<label
+						for="<?php echo esc_attr($uid); ?>-network"><?php echo esc_html__('Network', 'tools-for-devs'); ?></label>
+					<select id="<?php echo esc_attr($uid); ?>-network">
+						<option value="false" <?php selected($network, 'false'); ?>>
+							<?php echo esc_html__('No', 'tools-for-devs'); ?>
+						</option>
+						<option value="true" <?php selected($network, 'true'); ?>>
+							<?php echo esc_html__('Yes', 'tools-for-devs'); ?>
+						</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="tfd-phg-row">
+				<div class="tfd-phg-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-license"><?php echo esc_html__('License', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-license" type="text" value="<?php echo $license; ?>"
+						placeholder="GPL v2 or later">
+				</div>
+
+				<div class="tfd-phg-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-license-uri"><?php echo esc_html__('License URL', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-license-uri" type="text" value="<?php echo $license_uri; ?>"
+						placeholder="https://www.gnu.org/licenses/gpl-2.0.html">
+				</div>
+			</div>
+
+			<div class="tfd-phg-row">
+				<div class="tfd-phg-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-text-domain"><?php echo esc_html__('Text Domain', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-text-domain" type="text" value="<?php echo $text_domain; ?>"
+						placeholder="my-plugin">
+				</div>
+
+				<div class="tfd-phg-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-domain-path"><?php echo esc_html__('Domain Path', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-domain-path" type="text" value="<?php echo $domain_path; ?>"
+						placeholder="/languages">
+				</div>
+
+				<div class="tfd-phg-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-required"><?php echo esc_html__('Required Plugins', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-required" type="text" value=""
+						placeholder="<?php echo esc_attr__('e.g. woocommerce, wp-crontrol', 'tools-for-devs'); ?>">
+				</div>
+			</div>
+
+			<div class="tfd-phg-checks">
+				<label class="tfd-phg-check">
+					<input type="checkbox" id="<?php echo esc_attr($uid); ?>-woo">
+					<span><?php echo esc_html__('WooCommerce', 'tools-for-devs'); ?></span>
+				</label>
+			</div>
+
+			<div class="tfd-phg-actions">
+				<button class="tfd-phg-btn" type="button" data-action="generate">
+					<?php echo esc_html__('Generate header', 'tools-for-devs'); ?>
+				</button>
+
+				<span class="tfd-phg-toast" data-toast style="display:none;">
+					<?php echo esc_html__('Copied to clipboard.', 'tools-for-devs'); ?>
+				</span>
+			</div>
+
+			<div class="tfd-phg-out">
+				<textarea readonly id="<?php echo esc_attr($uid); ?>-out"
+					placeholder="<?php echo esc_attr__('Your plugin header will appear here...', 'tools-for-devs'); ?>"></textarea>
+			</div>
+
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+
+	public function tools_for_devs_shortcode_wp_wc_delete_products_sql_tool($atts, $content = '', $tag = ''): string
+	{
+
+		$atts = shortcode_atts(
+			array(
+				'prefix' => 'wp_',
+			),
+			$atts,
+			$tag
+		);
+
+		// Enqueue assets only when shortcode is rendered.
+		wp_enqueue_code_editor(
+			array(
+				'type' => 'text/x-sql',
+				'codemirror' => array(
+					'lineNumbers' => true,
+					'lineWrapping' => true,
+					'readOnly' => true,
+				),
+			)
+		);
+
+		wp_enqueue_style($this->plugin_name . '-wc-delete-products-sql-tool');
+		wp_enqueue_script($this->plugin_name . '-wc-delete-products-sql-tool');
+
+		$uid = 'wc-del-' . wp_generate_uuid4();
+		$prefix = esc_attr($atts['prefix']);
+
+		ob_start();
+		?>
+		<div class="wc-del-wrap" id="<?php echo esc_attr($uid); ?>" data-wc-del="1">
+
+			<p class="wc-del-desc">
+				<?php
+				echo esc_html__(
+					'Generate SQL queries to permanently delete all WooCommerce products (including variations) and related data. Always create a full database backup before running these queries.',
+					'tools-for-devs'
+				);
+				?>
+			</p>
+
+			<div class="wc-del-row">
+				<div class="wc-del-field wc-del-field--prefix">
+					<label
+						for="<?php echo esc_attr($uid); ?>-prefix"><?php echo esc_html__('Prefix', 'tools-for-devs'); ?></label>
+					<input type="text" id="<?php echo esc_attr($uid); ?>-prefix" value="<?php echo $prefix; ?>"
+						placeholder="<?php echo esc_attr__('wp_', 'tools-for-devs'); ?>" />
+				</div>
+
+				<label class="wc-del-check">
+					<input type="checkbox" id="<?php echo esc_attr($uid); ?>-truncate" />
+					<span><?php echo esc_html__('Use TRUNCATE for WooCommerce lookup tables (faster)', 'tools-for-devs'); ?></span>
+				</label>
+			</div>
+
+			<div class="wc-del-actions">
+				<button class="wc-del-btn" type="button" data-action="generate">
+					<?php echo esc_html__('Generate query', 'tools-for-devs'); ?>
+				</button>
+
+				<span class="wc-del-toast" data-toast style="display:none;">
+					<?php echo esc_html__('Queries copied to clipboard.', 'tools-for-devs'); ?>
+				</span>
+			</div>
+
+			<div class="wc-del-out">
+				<textarea readonly id="<?php echo esc_attr($uid); ?>-out"
+					placeholder="<?php echo esc_attr__('Your SQL queries will appear here...', 'tools-for-devs'); ?>"></textarea>
+			</div>
+
+		</div>
+		<?php
 		return ob_get_clean();
 	}
 
