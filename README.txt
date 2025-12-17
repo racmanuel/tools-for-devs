@@ -1,121 +1,123 @@
 === Tools for Developers ===
 Contributors: racmanuel
 Donate link: https://racmanuel.dev/
-Tags: tools, developer, debug, query
+Tags: developer tools, sql, generator, rest api, woocommerce, database, acf, scf
 Requires at least: 6.9
 Tested up to: 6.9
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
+A collection of practical generators for WordPress developers: SQL migration, DB prefix change, plugin headers, REST routes, ACF/SCF fields, and more.
 
 == Description ==
 
-This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
+**Tools for Developers** is a productivity plugin that provides a set of interactive generators to help WordPress developers create boilerplate code and SQL faster and more consistently.
 
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and
-Markdown parsed.
+The plugin focuses on **developer-friendly UI**, **readable output** (CodeMirror), and **one-click copy to clipboard**.
 
-A few notes about the sections above:
+### Included generators
 
-*   "Contributors" is a comma separated list of wp.org/wp-plugins.org usernames
-*   "Tags" is a comma separated list of tags that apply to the plugin
-*   "Requires at least" is the lowest version that the plugin will work on
-*   "Tested up to" is the highest version that you've *successfully used to test the plugin*. Note that it might work on
-higher versions... this is just the highest one you've verified.
-*   Stable tag should indicate the Subversion "tag" of the latest stable version, or "trunk," if you use `/trunk/` for
-stable.
+* **WordPress Migration SQL Generator**
+  Generate SQL queries to change site URLs when migrating a WordPress site to a new domain.
 
-    Note that the `readme.txt` of the stable tag is the one that is considered the defining one for the plugin, so
-if the `/trunk/readme.txt` file says that the stable tag is `4.3`, then it is `/tags/4.3/readme.txt` that'll be used
-for displaying information about the plugin.  In this situation, the only thing considered from the trunk `readme.txt`
-is the stable tag pointer.  Thus, if you develop in trunk, you can update the trunk `readme.txt` to reflect changes in
-your in-development version, without having that information incorrectly disclosed about the current stable version
-that lacks those changes -- as long as the trunk's `readme.txt` points to the correct stable tag.
+  Shortcode:
+  `[tools-for-devs-migration-sql]`
 
-    If no stable tag is provided, it is assumed that trunk is stable, but you should specify "trunk" if that's where
-you put the stable version, in order to eliminate any doubt.
+* **Database Prefix Generator**
+  Generate SQL queries to rename WordPress tables and update related keys. Includes optional multisite support and optional WooCommerce tables.
+
+  Shortcode:
+  `[tools-for-devs-db-prefix]`
+
+* **Plugin Header Generator**
+  Generate a WordPress plugin header block with common fields and optional requirements.
+
+  Shortcode:
+  `[tools-for-devs-plugin-header-generator]`
+
+* **WooCommerce Delete Products SQL Generator**
+  Generate SQL queries to delete WooCommerce products (use with caution and always back up first).
+
+  Shortcode:
+  `[tools-for-devs-delete-products-sql]`
+
+* **ACF / SCF Field Generator**
+  Generate scaffolding/boilerplate for custom fields (ACF / Secure Custom Fields). Intended for developers building custom field types.
+
+  Shortcode:
+  `[tools-for-devs-acf-field-generator]`
+
+* **REST Route Generator**
+  Generate `register_rest_route()` boilerplate, with support for:
+  - permissions
+  - dynamic args
+  - path params `(?P<id>\d+)`
+  - optional Controller Class mode
+  - optional CRUD generation
+  - curl examples
+
+  Shortcode:
+  `[tools-for-devs-rest-route-generator]`
+
+* **Database CRUD Generator**
+  Generate `$wpdb` + `dbDelta()` boilerplate for custom tables with upgrades and basic CRUD helpers.
+
+  Shortcode:
+  `[tools-for-devs-db-crud-generator]`
+
+### Notes
+
+* The generators **do not run SQL** automatically. They only output code/queries.
+* Always create a database backup before running generated SQL.
+* Some SQL operations can break serialized data if used incorrectly.
 
 == Installation ==
 
-This section describes how to install the plugin and get it working.
-
-e.g.
-
-1. Upload `tools-for-devs.php` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Place `<?php do_action('tools_for_devs_hook'); ?>` in your templates
+1. Upload the plugin folder to the `/wp-content/plugins/` directory, or install it via the WordPress Plugins screen.
+2. Activate the plugin through the **Plugins** menu in WordPress.
+3. Add any generator shortcode to a page or post.
 
 == Frequently Asked Questions ==
 
-= A question that someone might have =
+= Does this plugin modify my database automatically? =
 
-An answer to that question.
+No. The plugin only generates SQL/code. You decide when and where to execute it.
 
-= What about foo bar? =
+= Is this plugin safe to use on production? =
 
-Answer to foo bar dilemma.
+The plugin itself is safe because it only generates output. However, executing SQL on production can be risky. Always back up first and test changes on staging.
+
+= Does it support translations? =
+
+Yes. All UI strings are prepared for translation.
+
+= Does it work with Secure Custom Fields (SCF)? =
+
+Yes. The field generator is designed to support ACF and SCF workflows.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+1. Migration SQL Generator output with CodeMirror and copy-to-clipboard
+2. Database Prefix Generator (multisite + optional WooCommerce)
+3. REST Route Generator (Controller Class + CRUD options)
+4. Database CRUD Generator (dbDelta + upgrades)
+5. Plugin Header Generator
+6. ACF / SCF Field Generator
 
 == Changelog ==
 
-= 1.0 =
-* A change since the previous version.
-* Another change.
-
-= 0.5 =
-* List versions from most recent at top to oldest at bottom.
+= 1.0.0 =
+* Initial release with 7 generators:
+  - Migration SQL
+  - DB Prefix
+  - Plugin Header Generator
+  - WooCommerce Delete Products SQL
+  - ACF / SCF Field Generator
+  - REST Route Generator
+  - DB CRUD Generator
 
 == Upgrade Notice ==
 
-= 1.0 =
-Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
-
-= 0.5 =
-This version fixes a security related bug.  Upgrade immediately.
-
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
-
-== A brief Markdown Example ==
-
-Ordered list:
-
-1. Some feature
-1. Another feature
-1. Something else about the plugin
-
-Unordered list:
-
-* something
-* something else
-* third thing
-
-Here's a link to [WordPress](https://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax].
-Titles are optional, naturally.
-
-[markdown syntax]: https://daringfireball.net/projects/markdown/syntax
-            "Markdown is what the parser uses to process much of the readme file"
-
-Markdown uses email style notation for blockquotes and I've been told:
-> Asterisks for *emphasis*. Double it up  for **strong**.
-
-`<?php code(); // goes in backticks ?>`
-
-<pre><code>
-<?php 
-code(); // multiple line code goes into pre/code tags
-code(); // multiple line code goes into pre/code tags
-code(); // multiple line code goes into pre/code tags
-</code></pre>
+= 1.0.0 =
+Initial public release.

@@ -1,31 +1,34 @@
 <?php
+<?php
 /**
- * The plugin bootstrap file
- *
- * This file is read by WordPress or ClassicPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
- *
- * @link              https://racmanuel.dev/
- * @since             1.0.0
- * @package           Tools_For_Devs
- *
- * @wordpress-plugin
  * Plugin Name:       Tools for Developers
- * Plugin URI:        https://plugin.com/tools-for-devs-uri/
- * Description:       Make a shortcodes with tools for wordpress developers
+ * Plugin URI:        https://racmanuel.dev/plugins/tools-for-developers
+ * Description:       A collection of practical generators and utilities for WordPress developers. Generate SQL, REST API code, and database boilerplate safely.
  * Version:           1.0.0
- * Author:            racmanuel
  * Requires at least: 6.9
  * Requires PHP:      7.4
  * Tested up to:      6.9
- * Author URI:        https://racmanuel.dev//
- * License:           GPL-2.0+
- * License URI:       https://www.gnu.org/licenses/gpl-2.0.txt
+ * Author:            racmanuel
+ * Author URI:        https://racmanuel.dev/
+ * License:           GPLv2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       tools-for-devs
  * Domain Path:       /languages
+ *
+ * @package Tools_For_Devs
  */
+
+/**
+ * The plugin bootstrap file.
+ *
+ * This file is read by WordPress to generate the plugin information in the
+ * Plugins admin screen. This file also loads all dependencies, registers
+ * activation hooks, and initializes the plugin.
+ *
+ * @since 1.0.0
+ * @link  https://racmanuel.dev/
+ */
+
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
