@@ -302,6 +302,8 @@ class Tools_For_Devs
         $this->loader->add_shortcode($this->get_plugin_name() . '-db-prefix', $plugin_public, 'tools_for_devs_shortcode_wp_db_prefix_tool');
         $this->loader->add_shortcode($this->get_plugin_name() . '-plugin-header-generator', $plugin_public, 'tools_for_devs_shortcode_wp_plugin_header_generator');
         $this->loader->add_shortcode($this->get_plugin_name() . '-delete-products-sql', $plugin_public, 'tools_for_devs_shortcode_wp_wc_delete_products_sql_tool');
+        $this->loader->add_shortcode($this->get_plugin_name() . '-acf-field-generator', $plugin_public, 'tools_for_devs_shortcode_acf_field_generator');
+        $this->loader->add_shortcode($this->get_plugin_name() . '-rest-route-generator', $plugin_public, 'tools_for_devs_shortcode_wp_rest_route_generator');
     }
 
     /**

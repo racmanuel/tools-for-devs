@@ -1,0 +1,221 @@
+.rrg-wrap {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 12px;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+
+.rrg-desc {
+    max-width: 920px;
+    margin: 0 0 18px;
+    color: #50575e;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.rrg-row {
+    display: flex;
+    gap: 18px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.rrg-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 260px;
+}
+
+.rrg-field--sm {
+    min-width: 160px;
+    width: 180px;
+}
+
+.rrg-field--wide {
+    flex: 1 1 520px;
+    min-width: 520px;
+}
+
+.rrg-field label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e1e1e;
+}
+
+.rrg-field input,
+.rrg-field select {
+    height: 44px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    padding: 0 14px;
+    font-size: 16px;
+    background: #fff;
+    color: #1e1e1e;
+}
+
+.rrg-field input:focus,
+.rrg-field select:focus {
+    outline: none;
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+}
+
+.rrg-hint {
+    font-size: 12px;
+    color: #646970;
+    margin-top: 2px;
+}
+
+.rrg-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    color: #1e1e1e;
+    padding-bottom: 8px;
+}
+
+.rrg-check input {
+    width: 18px;
+    height: 18px;
+}
+
+.rrg-args-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 18px 0 8px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.rrg-mini-btn {
+    height: 34px;
+    padding: 0 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.rrg-mini-btn:hover {
+    opacity: .92;
+}
+
+.rrg-mini-btn--danger {
+    border-color: #d63638;
+    color: #d63638;
+}
+
+.rrg-args-table {
+    border: 1px solid #dcdcde;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.rrg-args-row {
+    display: grid;
+    grid-template-columns: 1.2fr .9fr .9fr .9fr 1.4fr 48px;
+    gap: 10px;
+    padding: 10px;
+    border-top: 1px solid #f0f0f1;
+    align-items: center;
+}
+
+.rrg-args-row--head {
+    background: #f6f7f7;
+    border-top: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e1e1e;
+}
+
+.rrg-args-row input,
+.rrg-args-row select {
+    height: 38px;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    padding: 0 10px;
+    font-size: 14px;
+    background: #fff;
+}
+
+.rrg-actions {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.rrg-btn {
+    background: #0f1419;
+    color: #fff;
+    border: 0;
+    border-radius: 14px;
+    padding: 14px 22px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.rrg-btn:hover {
+    opacity: .92;
+}
+
+.rrg-toast {
+    color: #008a20;
+    font-size: 14px;
+}
+
+.rrg-out {
+    margin-top: 18px;
+}
+
+.rrg-wrap .CodeMirror {
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    font-size: 13px;
+    height: auto;
+}
+
+.rrg-wrap .CodeMirror-scroll {
+    min-height: 380px;
+}
+
+.rrg-out textarea {
+    width: 100%;
+    min-height: 380px;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    padding: 14px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.45;
+    resize: vertical;
+}
+
+@media (max-width: 980px) {
+
+    .rrg-field,
+    .rrg-field--wide {
+        min-width: 100%;
+        flex: 1 1 100%;
+    }
+
+    .rrg-field--sm {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    .rrg-args-row {
+        grid-template-columns: 1fr;
+    }
+
+    .rrg-args-row--head {
+        display: none;
+    }
+}

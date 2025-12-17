@@ -80,6 +80,8 @@ class Tools_For_Devs_Public
 		wp_register_style($this->plugin_name . '-wp-db-prefix-tool', plugin_dir_url(__FILE__) . 'css/wp-db-prefix-tool.css', array(), $this->version, 'all');
 		wp_register_style($this->plugin_name . '-wp-plugin-header-generator', plugin_dir_url(__FILE__) . 'css/wp-plugin-header-generator.css', array(), $this->version, 'all');
 		wp_register_style($this->plugin_name . '-wc-delete-products-sql-tool', plugin_dir_url(__FILE__) . 'css/wc-delete-products-sql-tool.css', array(), $this->version, 'all');
+		wp_register_style($this->plugin_name . '-wp-acf-field-generator', plugin_dir_url(__FILE__) . 'css/wp-acf-field-generator.css', array(), $this->version, 'all');
+		wp_register_style($this->plugin_name . '-wp-rest-route-generator', plugin_dir_url(__FILE__) . 'css/wp-rest-route-generator.css', array(), $this->version, 'all');
 	}
 
 	/**
@@ -95,6 +97,8 @@ class Tools_For_Devs_Public
 		wp_register_script($this->plugin_name . '-wp-db-prefix-tool', plugin_dir_url(__FILE__) . 'js/wp-db-prefix-tool.js', array('jquery', 'wp-i18n'), $this->version, true);
 		wp_register_script($this->plugin_name . '-wp-plugin-header-generator', plugin_dir_url(__FILE__) . 'js/wp-plugin-header-generator.js', array('jquery', 'wp-i18n'), $this->version, true);
 		wp_register_script($this->plugin_name . '-wc-delete-products-sql-tool', plugin_dir_url(__FILE__) . 'js/wc-delete-products-sql-tool.js', array('jquery', 'wp-i18n'), $this->version, true);
+		wp_register_script($this->plugin_name . '-wp-acf-field-generator', plugin_dir_url(__FILE__) . 'js/wp-acf-field-generator.js', array('jquery', 'wp-i18n'), $this->version, true);
+		wp_register_script($this->plugin_name . '-wp-rest-route-generator', plugin_dir_url(__FILE__) . 'js/wp-rest-route-generator.js', array('jquery', 'wp-i18n'), $this->version, true);
 	}
 
 	/**
@@ -625,6 +629,276 @@ class Tools_For_Devs_Public
 			<div class="wc-del-out">
 				<textarea readonly id="<?php echo esc_attr($uid); ?>-out"
 					placeholder="<?php echo esc_attr__('Your SQL queries will appear here...', 'tools-for-devs'); ?>"></textarea>
+			</div>
+
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+
+	public function tools_for_devs_shortcode_acf_field_generator($atts, $content = '', $tag = ''): string
+	{
+
+		$atts = shortcode_atts(
+			array(
+				'field_name' => 'my_field',
+				'field_label' => 'My Field',
+				'text_domain' => 'my-plugin',
+			),
+			$atts,
+			$tag
+		);
+
+		// Code editor (WordPress built-in CodeMirror).
+		wp_enqueue_code_editor(
+			array(
+				'type' => 'text/x-php',
+				'codemirror' => array(
+					'lineNumbers' => true,
+					'lineWrapping' => true,
+					'readOnly' => true,
+				),
+			)
+		);
+
+		wp_enqueue_style($this->plugin_name . '-wp-acf-field-generator');
+		wp_enqueue_script($this->plugin_name . '-wp-acf-field-generator');
+
+		$uid = 'acfgen-' . wp_generate_uuid4();
+		$field_name = esc_attr($atts['field_name']);
+		$field_label = esc_attr($atts['field_label']);
+		$text_domain = esc_attr($atts['text_domain']);
+
+		ob_start();
+		?>
+		<div class="acfgen-wrap" id="<?php echo esc_attr($uid); ?>" data-acfgen="1">
+
+			<p class="acfgen-desc">
+				<?php echo esc_html__(
+					'Generate boilerplate code for a custom field compatible with ACF / SCF. Fill the settings and click “Generate” to copy the result.',
+					'tools-for-devs'
+				); ?>
+			</p>
+
+			<div class="acfgen-row">
+				<div class="acfgen-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-name"><?php echo esc_html__('Field Name (slug)', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-name" type="text" value="<?php echo $field_name; ?>"
+						placeholder="my_field">
+				</div>
+
+				<div class="acfgen-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-label"><?php echo esc_html__('Field Label', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-label" type="text" value="<?php echo $field_label; ?>"
+						placeholder="My Field">
+				</div>
+
+				<div class="acfgen-field acfgen-field--sm">
+					<label
+						for="<?php echo esc_attr($uid); ?>-category"><?php echo esc_html__('Category', 'tools-for-devs'); ?></label>
+					<select id="<?php echo esc_attr($uid); ?>-category">
+						<option value="basic">basic</option>
+						<option value="content">content</option>
+						<option value="choice">choice</option>
+						<option value="relational">relational</option>
+						<option value="layout">layout</option>
+						<option value="jquery">jquery</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="acfgen-row">
+				<div class="acfgen-field acfgen-field--sm">
+					<label
+						for="<?php echo esc_attr($uid); ?>-class"><?php echo esc_html__('PHP Class Name', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-class" type="text" value="" placeholder="CFB_Field_My_Field">
+				</div>
+
+				<div class="acfgen-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-textdomain"><?php echo esc_html__('Text Domain', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-textdomain" type="text" value="<?php echo $text_domain; ?>"
+						placeholder="my-plugin">
+				</div>
+
+				<div class="acfgen-field acfgen-field--sm">
+					<label
+						for="<?php echo esc_attr($uid); ?>-versionconst"><?php echo esc_html__('Version Constant', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-versionconst" type="text" value="MY_PLUGIN_VERSION"
+						placeholder="MY_PLUGIN_VERSION">
+				</div>
+			</div>
+
+			<div class="acfgen-checks">
+				<label class="acfgen-check">
+					<input type="checkbox" id="<?php echo esc_attr($uid); ?>-hasjs" checked>
+					<span><?php echo esc_html__('Include JS (acf.Field.extend)', 'tools-for-devs'); ?></span>
+				</label>
+
+				<label class="acfgen-check">
+					<input type="checkbox" id="<?php echo esc_attr($uid); ?>-hascss">
+					<span><?php echo esc_html__('Include CSS', 'tools-for-devs'); ?></span>
+				</label>
+
+				<label class="acfgen-check">
+					<input type="checkbox" id="<?php echo esc_attr($uid); ?>-supportsrest" checked>
+					<span><?php echo esc_html__('Show in REST', 'tools-for-devs'); ?></span>
+				</label>
+
+				<label class="acfgen-check">
+					<input type="checkbox" id="<?php echo esc_attr($uid); ?>-supportsrequired" checked>
+					<span><?php echo esc_html__('Supports Required', 'tools-for-devs'); ?></span>
+				</label>
+			</div>
+
+			<div class="acfgen-actions">
+				<button class="acfgen-btn" type="button" data-action="generate">
+					<?php echo esc_html__('Generate', 'tools-for-devs'); ?>
+				</button>
+
+				<span class="acfgen-toast" data-toast style="display:none;">
+					<?php echo esc_html__('Copied to clipboard.', 'tools-for-devs'); ?>
+				</span>
+			</div>
+
+			<div class="acfgen-out">
+				<textarea readonly id="<?php echo esc_attr($uid); ?>-out"
+					placeholder="<?php echo esc_attr__('Your generated code will appear here...', 'tools-for-devs'); ?>"></textarea>
+			</div>
+
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	public function tools_for_devs_shortcode_wp_rest_route_generator($atts, $content = '', $tag = ''): string
+	{
+
+		$atts = shortcode_atts(
+			array(
+				'namespace' => 'my-plugin/v1',
+				'route' => '/items/(?P<id>\\d+)',
+			),
+			$atts,
+			$tag
+		);
+
+		wp_enqueue_code_editor(
+			array(
+				'type' => 'text/x-php',
+				'codemirror' => array(
+					'lineNumbers' => true,
+					'lineWrapping' => true,
+					'readOnly' => true,
+				),
+			)
+		);
+
+		wp_enqueue_style($this->plugin_name . '-wp-rest-route-generator');
+		wp_enqueue_script($this->plugin_name . '-wp-rest-route-generator');
+
+		$uid = 'rrg-' . wp_generate_uuid4();
+		$namespace = esc_attr($atts['namespace']);
+		$route = esc_attr($atts['route']);
+
+		ob_start();
+		?>
+		<div class="rrg-wrap" id="<?php echo esc_attr($uid); ?>" data-rrg="1">
+
+			<p class="rrg-desc">
+				<?php echo esc_html__(
+					'Generate WordPress REST API boilerplate with register_rest_route(), optional Controller Class mode, automatic path parameter detection, dynamic args table, and curl examples.',
+					'tools-for-devs'
+				); ?>
+			</p>
+
+			<div class="rrg-row">
+				<div class="rrg-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-ns"><?php echo esc_html__('Namespace', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-ns" type="text" value="<?php echo $namespace; ?>"
+						placeholder="my-plugin/v1">
+				</div>
+
+				<div class="rrg-field">
+					<label
+						for="<?php echo esc_attr($uid); ?>-route"><?php echo esc_html__('Route', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-route" type="text" value="<?php echo $route; ?>"
+						placeholder="/items/(?P<id>\d+)">
+					<div class="rrg-hint">
+						<?php echo esc_html__('Tip: Use path params like (?P<id>\\d+) and we will auto-detect them.', 'tools-for-devs'); ?>
+					</div>
+				</div>
+
+				<div class="rrg-field rrg-field--sm">
+					<label
+						for="<?php echo esc_attr($uid); ?>-method"><?php echo esc_html__('Method', 'tools-for-devs'); ?></label>
+					<select id="<?php echo esc_attr($uid); ?>-method">
+						<option value="GET">GET</option>
+						<option value="POST">POST</option>
+						<option value="PUT">PUT</option>
+						<option value="PATCH">PATCH</option>
+						<option value="DELETE">DELETE</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="rrg-row">
+				<div class="rrg-field rrg-field--sm">
+					<label
+						for="<?php echo esc_attr($uid); ?>-perm"><?php echo esc_html__('Permission', 'tools-for-devs'); ?></label>
+					<select id="<?php echo esc_attr($uid); ?>-perm">
+						<option value="public"><?php echo esc_html__('Public', 'tools-for-devs'); ?></option>
+						<option value="logged_in"><?php echo esc_html__('Logged-in users', 'tools-for-devs'); ?></option>
+						<option value="capability"><?php echo esc_html__('Capability', 'tools-for-devs'); ?></option>
+					</select>
+				</div>
+
+				<div class="rrg-field rrg-field--wide rrg-cap" style="display:none;">
+					<label
+						for="<?php echo esc_attr($uid); ?>-cap"><?php echo esc_html__('Capability', 'tools-for-devs'); ?></label>
+					<input id="<?php echo esc_attr($uid); ?>-cap" type="text" value="manage_options"
+						placeholder="manage_options">
+				</div>
+
+				<label class="rrg-check">
+					<input type="checkbox" id="<?php echo esc_attr($uid); ?>-controller">
+					<span><?php echo esc_html__('Generate as Controller Class', 'tools-for-devs'); ?></span>
+				</label>
+			</div>
+
+			<div class="rrg-args-head">
+				<strong><?php echo esc_html__('Parameters (args)', 'tools-for-devs'); ?></strong>
+				<button type="button" class="rrg-mini-btn"
+					data-action="add-arg"><?php echo esc_html__('+ Add param', 'tools-for-devs'); ?></button>
+			</div>
+
+			<div class="rrg-args-table" data-args-table>
+				<div class="rrg-args-row rrg-args-row--head">
+					<div><?php echo esc_html__('Name', 'tools-for-devs'); ?></div>
+					<div><?php echo esc_html__('In', 'tools-for-devs'); ?></div>
+					<div><?php echo esc_html__('Type', 'tools-for-devs'); ?></div>
+					<div><?php echo esc_html__('Required', 'tools-for-devs'); ?></div>
+					<div><?php echo esc_html__('Sanitize', 'tools-for-devs'); ?></div>
+					<div></div>
+				</div>
+
+				<!-- JS will insert rows here -->
+			</div>
+
+			<div class="rrg-actions">
+				<button class="rrg-btn" type="button"
+					data-action="generate"><?php echo esc_html__('Generate', 'tools-for-devs'); ?></button>
+				<span class="rrg-toast" data-toast
+					style="display:none;"><?php echo esc_html__('Copied to clipboard.', 'tools-for-devs'); ?></span>
+			</div>
+
+			<div class="rrg-out">
+				<textarea readonly id="<?php echo esc_attr($uid); ?>-out"
+					placeholder="<?php echo esc_attr__('Your generated code will appear here...', 'tools-for-devs'); ?>"></textarea>
 			</div>
 
 		</div>
