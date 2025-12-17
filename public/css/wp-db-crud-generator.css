@@ -1,0 +1,544 @@
+/* ==========================================================================
+   Tools for Devs - DB CRUD Generator
+   File: wp-db-crud-generator.css
+   ========================================================================== */
+
+.dbcg-wrap {
+    --dbcg-radius: 14px;
+    --dbcg-border: rgba(0, 0, 0, 0.10);
+    --dbcg-muted: rgba(0, 0, 0, 0.62);
+    --dbcg-muted-2: rgba(0, 0, 0, 0.52);
+    --dbcg-bg-soft: rgba(0, 0, 0, 0.02);
+    --dbcg-bg-soft-2: rgba(0, 0, 0, 0.04);
+    --dbcg-focus: rgba(0, 115, 170, 0.35);
+    /* WP-ish focus */
+    --dbcg-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+
+    border: 1px solid var(--dbcg-border);
+    border-radius: var(--dbcg-radius);
+    background: #fff;
+    padding: 16px;
+    max-width: 1100px;
+}
+
+/* --------------------------------------------------------------------------
+   Intro
+   -------------------------------------------------------------------------- */
+
+.dbcg-intro {
+    padding: 4px 2px 14px;
+}
+
+.dbcg-title {
+    margin: 0 0 8px;
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.dbcg-desc {
+    margin: 0 0 12px;
+    color: var(--dbcg-muted);
+    line-height: 1.45;
+}
+
+.dbcg-bullets {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--dbcg-muted);
+}
+
+.dbcg-bullets li {
+    margin: 4px 0;
+}
+
+/* Quick start block */
+.dbcg-quickstart {
+    margin: 12px 0 16px;
+    padding: 12px 14px;
+    border: 1px solid var(--dbcg-border);
+    border-radius: 12px;
+    background: var(--dbcg-bg-soft);
+}
+
+.dbcg-quickstart-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.dbcg-quickstart-steps {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--dbcg-muted);
+}
+
+.dbcg-quickstart-steps li {
+    margin: 2px 0;
+}
+
+/* --------------------------------------------------------------------------
+   Grid / fields
+   -------------------------------------------------------------------------- */
+
+.dbcg-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.dbcg-field {
+    border: 1px solid var(--dbcg-border);
+    border-radius: 12px;
+    padding: 12px;
+    background: #fff;
+}
+
+.dbcg-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.dbcg-field label {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.dbcg-field input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--dbcg-border);
+    background: #fff;
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+.dbcg-field input[type="text"]:focus {
+    outline: 2px solid var(--dbcg-focus);
+    outline-offset: 2px;
+    border-color: rgba(0, 115, 170, 0.35);
+}
+
+/* Example text under inputs */
+.dbcg-example {
+    margin-top: 7px;
+    font-size: 12px;
+    line-height: 1.35;
+    color: var(--dbcg-muted-2);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.dbcg-example code {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--dbcg-bg-soft-2);
+}
+
+.dbcg-example-muted {
+    color: var(--dbcg-muted-2);
+}
+
+/* --------------------------------------------------------------------------
+   Tooltip (What is this?)
+   -------------------------------------------------------------------------- */
+
+.dbcg-tipwrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.dbcg-tipbtn {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    border: 1px solid var(--dbcg-border);
+    background: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+    user-select: none;
+}
+
+.dbcg-tipbtn:hover {
+    background: var(--dbcg-bg-soft);
+}
+
+.dbcg-tipbtn:focus {
+    outline: 2px solid var(--dbcg-focus);
+    outline-offset: 2px;
+}
+
+.dbcg-tooltip {
+    position: absolute;
+    top: 28px;
+    right: 0;
+    min-width: 230px;
+    max-width: 360px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--dbcg-border);
+    background: #fff;
+    box-shadow: var(--dbcg-shadow);
+    font-size: 12px;
+    line-height: 1.35;
+    color: rgba(0, 0, 0, 0.78);
+    z-index: 9999;
+    display: none;
+}
+
+.dbcg-tooltip strong {
+    font-weight: 700;
+}
+
+/* Show tooltip on hover or keyboard focus */
+.dbcg-tipwrap:hover .dbcg-tooltip,
+.dbcg-tipbtn:focus+.dbcg-tooltip {
+    display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Checks
+   -------------------------------------------------------------------------- */
+
+.dbcg-checks {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 14px 0 6px;
+}
+
+.dbcg-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    border: 1px solid var(--dbcg-border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: #fff;
+}
+
+.dbcg-check input[type="checkbox"] {
+    margin-top: 3px;
+}
+
+.dbcg-check span {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.2;
+    display: block;
+}
+
+.dbcg-check-hint {
+    display: block;
+    margin-top: 4px;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 1.35;
+    color: var(--dbcg-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Columns header row
+   -------------------------------------------------------------------------- */
+
+.dbcg-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 2px 6px;
+    margin-top: 10px;
+}
+
+.dbcg-head strong {
+    font-size: 14px;
+}
+
+.dbcg-subhead {
+    color: var(--dbcg-muted);
+    font-size: 12px;
+    line-height: 1.35;
+    flex: 1 1 auto;
+    min-width: 260px;
+}
+
+/* --------------------------------------------------------------------------
+   Table (dynamic columns)
+   -------------------------------------------------------------------------- */
+
+.dbcg-table {
+    border: 1px solid var(--dbcg-border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.dbcg-rowh,
+.dbcg-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1.4fr 0.6fr 1fr 1fr 48px;
+    gap: 8px;
+    padding: 10px;
+    align-items: center;
+}
+
+.dbcg-rowh {
+    background: var(--dbcg-bg-soft);
+    border-bottom: 1px solid var(--dbcg-border);
+    font-weight: 700;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.70);
+}
+
+.dbcg-row {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dbcg-row:last-child {
+    border-bottom: 0;
+}
+
+.dbcg-row input[type="text"],
+.dbcg-row select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--dbcg-border);
+    background: #fff;
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+.dbcg-row select:focus,
+.dbcg-row input[type="text"]:focus {
+    outline: 2px solid var(--dbcg-focus);
+    outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons / actions
+   -------------------------------------------------------------------------- */
+
+.dbcg-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.dbcg-btn {
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.dbcg-btn:hover {
+    background: var(--dbcg-bg-soft);
+}
+
+.dbcg-btn:focus {
+    outline: 2px solid var(--dbcg-focus);
+    outline-offset: 2px;
+}
+
+.dbcg-mini-btn {
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: #fff;
+    border-radius: 999px;
+    padding: 7px 10px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.dbcg-mini-btn:hover {
+    background: var(--dbcg-bg-soft);
+}
+
+.dbcg-mini-btn--danger {
+    border-color: rgba(180, 0, 0, 0.25);
+}
+
+.dbcg-mini-btn--danger:hover {
+    background: rgba(180, 0, 0, 0.06);
+}
+
+.dbcg-toast {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.65);
+    background: var(--dbcg-bg-soft);
+    border: 1px solid var(--dbcg-border);
+    border-radius: 999px;
+    padding: 6px 10px;
+}
+
+/* --------------------------------------------------------------------------
+   Output
+   -------------------------------------------------------------------------- */
+
+.dbcg-out {
+    margin-top: 12px;
+}
+
+.dbcg-out textarea {
+    width: 100%;
+    min-height: 280px;
+    box-sizing: border-box;
+    border: 1px solid var(--dbcg-border);
+    border-radius: 12px;
+    padding: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    color: rgba(0, 0, 0, 0.85);
+    background: #fff;
+    resize: vertical;
+}
+
+.dbcg-out textarea:focus {
+    outline: 2px solid var(--dbcg-focus);
+    outline-offset: 2px;
+}
+
+.dbcg-tip {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--dbcg-border);
+    border-radius: 12px;
+    background: var(--dbcg-bg-soft);
+    color: var(--dbcg-muted);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.dbcg-tip strong {
+    color: rgba(0, 0, 0, 0.78);
+}
+
+/* CodeMirror (WP Code Editor) tweaks inside our wrapper */
+.dbcg-wrap .CodeMirror {
+    border: 1px solid var(--dbcg-border);
+    border-radius: 12px;
+    height: auto;
+    min-height: 280px;
+    font-size: 12px;
+}
+
+.dbcg-wrap .CodeMirror-scroll {
+    min-height: 280px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 980px) {
+    .dbcg-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dbcg-checks {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 680px) {
+    .dbcg-wrap {
+        padding: 14px;
+    }
+
+    .dbcg-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Make "table" stack on mobile */
+    .dbcg-rowh {
+        display: none;
+    }
+
+    .dbcg-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .dbcg-row>div {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 10px;
+        align-items: center;
+    }
+
+    /* Add pseudo-labels for mobile using nth-child */
+    .dbcg-row>div:nth-child(1)::before {
+        content: "Name";
+        font-weight: 700;
+        color: rgba(0, 0, 0, .65);
+    }
+
+    .dbcg-row>div:nth-child(2)::before {
+        content: "SQL Type";
+        font-weight: 700;
+        color: rgba(0, 0, 0, .65);
+    }
+
+    .dbcg-row>div:nth-child(3)::before {
+        content: "Null";
+        font-weight: 700;
+        color: rgba(0, 0, 0, .65);
+    }
+
+    .dbcg-row>div:nth-child(4)::before {
+        content: "Default";
+        font-weight: 700;
+        color: rgba(0, 0, 0, .65);
+    }
+
+    .dbcg-row>div:nth-child(5)::before {
+        content: "Extra";
+        font-weight: 700;
+        color: rgba(0, 0, 0, .65);
+    }
+
+    /* Remove button row: make it full width and align right */
+    .dbcg-row>div:nth-child(6) {
+        grid-template-columns: 1fr;
+        justify-items: end;
+    }
+
+    .dbcg-tooltip {
+        right: 0;
+        left: auto;
+        max-width: 90vw;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Minor WP admin compatibility
+   -------------------------------------------------------------------------- */
+
+.dbcg-wrap * {
+    box-sizing: border-box;
+}
+
+.dbcg-wrap button {
+    font-family: inherit;
+}

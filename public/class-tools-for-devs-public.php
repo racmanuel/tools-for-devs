@@ -82,6 +82,7 @@ class Tools_For_Devs_Public
 		wp_register_style($this->plugin_name . '-wc-delete-products-sql-tool', plugin_dir_url(__FILE__) . 'css/wc-delete-products-sql-tool.css', array(), $this->version, 'all');
 		wp_register_style($this->plugin_name . '-wp-acf-field-generator', plugin_dir_url(__FILE__) . 'css/wp-acf-field-generator.css', array(), $this->version, 'all');
 		wp_register_style($this->plugin_name . '-wp-rest-route-generator', plugin_dir_url(__FILE__) . 'css/wp-rest-route-generator.css', array(), $this->version, 'all');
+		wp_register_style($this->plugin_name . '-wp-db-crud-generator', plugin_dir_url(__FILE__) . 'css/wp-db-crud-generator.css', array(), $this->version, 'all');
 	}
 
 	/**
@@ -91,7 +92,6 @@ class Tools_For_Devs_Public
 	 */
 	public function enqueue_scripts()
 	{
-
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/tools-for-devs-public.js', array('jquery'), $this->version, true);
 		wp_register_script($this->plugin_name . '-wp-migration-sql-tool', plugin_dir_url(__FILE__) . 'js/wp-migration-sql-tool.js', array('jquery', 'wp-i18n'), $this->version, true);
 		wp_register_script($this->plugin_name . '-wp-db-prefix-tool', plugin_dir_url(__FILE__) . 'js/wp-db-prefix-tool.js', array('jquery', 'wp-i18n'), $this->version, true);
@@ -99,6 +99,7 @@ class Tools_For_Devs_Public
 		wp_register_script($this->plugin_name . '-wc-delete-products-sql-tool', plugin_dir_url(__FILE__) . 'js/wc-delete-products-sql-tool.js', array('jquery', 'wp-i18n'), $this->version, true);
 		wp_register_script($this->plugin_name . '-wp-acf-field-generator', plugin_dir_url(__FILE__) . 'js/wp-acf-field-generator.js', array('jquery', 'wp-i18n'), $this->version, true);
 		wp_register_script($this->plugin_name . '-wp-rest-route-generator', plugin_dir_url(__FILE__) . 'js/wp-rest-route-generator.js', array('jquery', 'wp-i18n'), $this->version, true);
+		wp_register_script($this->plugin_name . '-wp-db-crud-generator', plugin_dir_url(__FILE__) . 'js/wp-db-crud-generator.js', array('jquery', 'wp-i18n'), $this->version, true);
 	}
 
 	/**
@@ -905,5 +906,325 @@ class Tools_For_Devs_Public
 		<?php
 		return ob_get_clean();
 	}
+
+	public function tools_for_devs_shortcode_wp_db_crud_generator($atts, $content = '', $tag = ''): string
+	{
+
+		$atts = shortcode_atts(
+			array(
+				'entity' => 'item',
+				'table' => 'tfd_items',
+				'namespace' => 'tools-for-devs/v1',
+				'capability' => 'manage_options',
+				'option_key' => 'tfd_db_version',
+				'version_const' => 'TOOLS_FOR_DEVS_VERSION',
+			),
+			$atts,
+			$tag
+		);
+
+		wp_enqueue_code_editor(
+			array(
+				'type' => 'text/x-php',
+				'codemirror' => array(
+					'lineNumbers' => true,
+					'lineWrapping' => true,
+					'readOnly' => true,
+				),
+			)
+		);
+
+		wp_enqueue_style($this->plugin_name . '-wp-db-crud-generator');
+		wp_enqueue_script($this->plugin_name . '-wp-db-crud-generator');
+
+		$uid = 'dbcg-' . wp_generate_uuid4();
+
+		ob_start();
+		?>
+		<div class="dbcg-wrap" id="<?php echo esc_attr($uid); ?>" data-dbcg="1">
+
+			<div class="dbcg-intro">
+				<h3 class="dbcg-title"><?php echo esc_html__('DB CRUD Generator (Custom Tables)', 'tools-for-devs'); ?></h3>
+
+				<p class="dbcg-desc">
+					<?php echo esc_html__(
+						'This generator creates a complete CRUD stack for a custom WordPress database table using $wpdb: an installer (dbDelta + versioned upgrades), a repository (create/read/update/delete/list), and an optional REST API controller. Click Generate to get copy-paste ready code.',
+						'tools-for-devs'
+					); ?>
+				</p>
+
+				<div class="dbcg-quickstart" role="note"
+					aria-label="<?php echo esc_attr__('Quick start', 'tools-for-devs'); ?>">
+					<div class="dbcg-quickstart-title">
+						<?php echo esc_html__('3-step Quick start', 'tools-for-devs'); ?>
+					</div>
+					<ol class="dbcg-quickstart-steps">
+						<li><?php echo esc_html__('Fill the form', 'tools-for-devs'); ?></li>
+						<li><?php echo esc_html__('Click Generate (auto-copy)', 'tools-for-devs'); ?></li>
+						<li><?php echo esc_html__('Paste into my-plugin.php, zip, upload', 'tools-for-devs'); ?></li>
+					</ol>
+				</div>
+
+				<ul class="dbcg-bullets">
+					<li><?php echo esc_html__('Best for data that should not live in wp_posts/wp_postmeta (logs, queues, tickets, picking, sync tables, etc.).', 'tools-for-devs'); ?>
+					</li>
+					<li><?php echo esc_html__('Includes safe defaults: column allow-list, prepared queries, and upgrade checks.', 'tools-for-devs'); ?>
+					</li>
+					<li><?php echo esc_html__('Always back up your database before deploying schema changes.', 'tools-for-devs'); ?>
+					</li>
+				</ul>
+			</div>
+
+			<div class="dbcg-grid">
+
+				<div class="dbcg-field">
+					<div class="dbcg-label">
+						<label
+							for="<?php echo esc_attr($uid); ?>-entity"><?php echo esc_html__('Entity name', 'tools-for-devs'); ?></label>
+
+						<span class="dbcg-tipwrap">
+							<button type="button" class="dbcg-tipbtn"
+								aria-label="<?php echo esc_attr__('What is this?', 'tools-for-devs'); ?>">
+								<span aria-hidden="true">ⓘ</span>
+							</button>
+							<span class="dbcg-tooltip" role="tooltip">
+								<strong><?php echo esc_html__('What is this?', 'tools-for-devs'); ?></strong><br>
+								<?php echo esc_html__('Used to build class names and the REST route base.', 'tools-for-devs'); ?>
+							</span>
+						</span>
+					</div>
+
+					<input id="<?php echo esc_attr($uid); ?>-entity" type="text"
+						value="<?php echo esc_attr($atts['entity']); ?>" placeholder="ticket">
+
+					<div class="dbcg-example">
+						<?php echo esc_html__('Example:', 'tools-for-devs'); ?>
+						<code>ticket</code>
+						<span
+							class="dbcg-example-muted"><?php echo esc_html__('→ REST: /ticket, PHP classes: Ticket_Repository', 'tools-for-devs'); ?></span>
+					</div>
+				</div>
+
+				<div class="dbcg-field">
+					<div class="dbcg-label">
+						<label
+							for="<?php echo esc_attr($uid); ?>-table"><?php echo esc_html__('Table name (without wp_ prefix)', 'tools-for-devs'); ?></label>
+
+						<span class="dbcg-tipwrap">
+							<button type="button" class="dbcg-tipbtn"
+								aria-label="<?php echo esc_attr__('What is this?', 'tools-for-devs'); ?>">
+								<span aria-hidden="true">ⓘ</span>
+							</button>
+							<span class="dbcg-tooltip" role="tooltip">
+								<strong><?php echo esc_html__('What is this?', 'tools-for-devs'); ?></strong><br>
+								<?php echo esc_html__('The table name suffix. WordPress prefix is added automatically via $wpdb->prefix.', 'tools-for-devs'); ?>
+							</span>
+						</span>
+					</div>
+
+					<input id="<?php echo esc_attr($uid); ?>-table" type="text" value="<?php echo esc_attr($atts['table']); ?>"
+						placeholder="my_plugin_tickets">
+
+					<div class="dbcg-example">
+						<?php echo esc_html__('Example:', 'tools-for-devs'); ?>
+						<code>my_plugin_tickets</code>
+						<span
+							class="dbcg-example-muted"><?php echo esc_html__('→ Real table: wp_my_plugin_tickets (or wp_2_... on multisite)', 'tools-for-devs'); ?></span>
+					</div>
+				</div>
+
+				<div class="dbcg-field">
+					<div class="dbcg-label">
+						<label
+							for="<?php echo esc_attr($uid); ?>-ns"><?php echo esc_html__('REST namespace', 'tools-for-devs'); ?></label>
+
+						<span class="dbcg-tipwrap">
+							<button type="button" class="dbcg-tipbtn"
+								aria-label="<?php echo esc_attr__('What is this?', 'tools-for-devs'); ?>">
+								<span aria-hidden="true">ⓘ</span>
+							</button>
+							<span class="dbcg-tooltip" role="tooltip">
+								<strong><?php echo esc_html__('What is this?', 'tools-for-devs'); ?></strong><br>
+								<?php echo esc_html__('The REST API namespace used under /wp-json/{namespace}/...', 'tools-for-devs'); ?>
+							</span>
+						</span>
+					</div>
+
+					<input id="<?php echo esc_attr($uid); ?>-ns" type="text" value="<?php echo esc_attr($atts['namespace']); ?>"
+						placeholder="my-plugin/v1">
+
+					<div class="dbcg-example">
+						<?php echo esc_html__('Example:', 'tools-for-devs'); ?>
+						<code>my-plugin/v1</code>
+						<span
+							class="dbcg-example-muted"><?php echo esc_html__('→ Base: /wp-json/my-plugin/v1/ticket', 'tools-for-devs'); ?></span>
+					</div>
+				</div>
+
+				<div class="dbcg-field">
+					<div class="dbcg-label">
+						<label
+							for="<?php echo esc_attr($uid); ?>-cap"><?php echo esc_html__('Write capability', 'tools-for-devs'); ?></label>
+
+						<span class="dbcg-tipwrap">
+							<button type="button" class="dbcg-tipbtn"
+								aria-label="<?php echo esc_attr__('What is this?', 'tools-for-devs'); ?>">
+								<span aria-hidden="true">ⓘ</span>
+							</button>
+							<span class="dbcg-tooltip" role="tooltip">
+								<strong><?php echo esc_html__('What is this?', 'tools-for-devs'); ?></strong><br>
+								<?php echo esc_html__('Users must have this capability to create/update/delete via REST. Reads are public by default.', 'tools-for-devs'); ?>
+							</span>
+						</span>
+					</div>
+
+					<input id="<?php echo esc_attr($uid); ?>-cap" type="text"
+						value="<?php echo esc_attr($atts['capability']); ?>" placeholder="manage_options">
+
+					<div class="dbcg-example">
+						<?php echo esc_html__('Example:', 'tools-for-devs'); ?>
+						<code>manage_options</code>
+						<span
+							class="dbcg-example-muted"><?php echo esc_html__('→ Admin-only writes', 'tools-for-devs'); ?></span>
+					</div>
+				</div>
+
+				<div class="dbcg-field">
+					<div class="dbcg-label">
+						<label
+							for="<?php echo esc_attr($uid); ?>-opt"><?php echo esc_html__('DB version option key', 'tools-for-devs'); ?></label>
+
+						<span class="dbcg-tipwrap">
+							<button type="button" class="dbcg-tipbtn"
+								aria-label="<?php echo esc_attr__('What is this?', 'tools-for-devs'); ?>">
+								<span aria-hidden="true">ⓘ</span>
+							</button>
+							<span class="dbcg-tooltip" role="tooltip">
+								<strong><?php echo esc_html__('What is this?', 'tools-for-devs'); ?></strong><br>
+								<?php echo esc_html__('Stored in wp_options to track installed schema version and run upgrades safely.', 'tools-for-devs'); ?>
+							</span>
+						</span>
+					</div>
+
+					<input id="<?php echo esc_attr($uid); ?>-opt" type="text"
+						value="<?php echo esc_attr($atts['option_key']); ?>" placeholder="my_plugin_db_version">
+
+					<div class="dbcg-example">
+						<?php echo esc_html__('Example:', 'tools-for-devs'); ?>
+						<code>my_plugin_db_version</code>
+						<span
+							class="dbcg-example-muted"><?php echo esc_html__('→ Used by Installer::maybe_upgrade()', 'tools-for-devs'); ?></span>
+					</div>
+				</div>
+
+				<div class="dbcg-field">
+					<div class="dbcg-label">
+						<label
+							for="<?php echo esc_attr($uid); ?>-vconst"><?php echo esc_html__('Version constant', 'tools-for-devs'); ?></label>
+
+						<span class="dbcg-tipwrap">
+							<button type="button" class="dbcg-tipbtn"
+								aria-label="<?php echo esc_attr__('What is this?', 'tools-for-devs'); ?>">
+								<span aria-hidden="true">ⓘ</span>
+							</button>
+							<span class="dbcg-tooltip" role="tooltip">
+								<strong><?php echo esc_html__('What is this?', 'tools-for-devs'); ?></strong><br>
+								<?php echo esc_html__('Constant used as the “target version” for schema upgrades (usually your plugin version constant).', 'tools-for-devs'); ?>
+							</span>
+						</span>
+					</div>
+
+					<input id="<?php echo esc_attr($uid); ?>-vconst" type="text"
+						value="<?php echo esc_attr($atts['version_const']); ?>" placeholder="MY_PLUGIN_VERSION">
+
+					<div class="dbcg-example">
+						<?php echo esc_html__('Example:', 'tools-for-devs'); ?>
+						<code>MY_PLUGIN_VERSION</code>
+						<span
+							class="dbcg-example-muted"><?php echo esc_html__('→ When version changes, schema upgrades can run', 'tools-for-devs'); ?></span>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="dbcg-checks">
+				<label class="dbcg-check">
+					<input type="checkbox" id="<?php echo esc_attr($uid); ?>-timestamps" checked>
+					<span><?php echo esc_html__('Add created_at / updated_at', 'tools-for-devs'); ?></span>
+					<em
+						class="dbcg-check-hint"><?php echo esc_html__('Adds timestamps and auto-updates updated_at on updates.', 'tools-for-devs'); ?></em>
+				</label>
+
+				<label class="dbcg-check">
+					<input type="checkbox" id="<?php echo esc_attr($uid); ?>-charset" checked>
+					<span><?php echo esc_html__('Use $wpdb charset/collate', 'tools-for-devs'); ?></span>
+					<em
+						class="dbcg-check-hint"><?php echo esc_html__('Recommended for UTF-8 and consistent collations.', 'tools-for-devs'); ?></em>
+				</label>
+
+				<label class="dbcg-check">
+					<input type="checkbox" id="<?php echo esc_attr($uid); ?>-repo" checked>
+					<span><?php echo esc_html__('Generate Repository CRUD', 'tools-for-devs'); ?></span>
+					<em
+						class="dbcg-check-hint"><?php echo esc_html__('Creates PHP methods: create/get/list/update/delete.', 'tools-for-devs'); ?></em>
+				</label>
+
+				<label class="dbcg-check">
+					<input type="checkbox" id="<?php echo esc_attr($uid); ?>-rest" checked>
+					<span><?php echo esc_html__('Generate REST CRUD Controller', 'tools-for-devs'); ?></span>
+					<em
+						class="dbcg-check-hint"><?php echo esc_html__('Creates /wp-json/{namespace}/{entity} endpoints.', 'tools-for-devs'); ?></em>
+				</label>
+			</div>
+
+			<div class="dbcg-head">
+				<strong><?php echo esc_html__('Columns', 'tools-for-devs'); ?></strong>
+				<span class="dbcg-subhead">
+					<?php echo esc_html__('Add your table columns below. The generator will ensure an id primary key exists.', 'tools-for-devs'); ?>
+				</span>
+				<button type="button" class="dbcg-mini-btn" data-action="add-col">
+					<?php echo esc_html__('+ Add column', 'tools-for-devs'); ?>
+				</button>
+			</div>
+
+			<div class="dbcg-table" data-cols>
+				<div class="dbcg-rowh">
+					<div><?php echo esc_html__('Name', 'tools-for-devs'); ?></div>
+					<div><?php echo esc_html__('SQL Type', 'tools-for-devs'); ?></div>
+					<div><?php echo esc_html__('Null', 'tools-for-devs'); ?></div>
+					<div><?php echo esc_html__('Default', 'tools-for-devs'); ?></div>
+					<div><?php echo esc_html__('Extra', 'tools-for-devs'); ?></div>
+					<div></div>
+				</div>
+			</div>
+
+			<div class="dbcg-actions">
+				<button class="dbcg-btn" type="button" data-action="generate">
+					<?php echo esc_html__('Generate CRUD', 'tools-for-devs'); ?>
+				</button>
+				<span class="dbcg-toast" data-toast style="display:none;">
+					<?php echo esc_html__('Copied to clipboard.', 'tools-for-devs'); ?>
+				</span>
+			</div>
+
+			<div class="dbcg-out">
+				<textarea readonly id="<?php echo esc_attr($uid); ?>-out"
+					placeholder="<?php echo esc_attr__('Your generated code will appear here...', 'tools-for-devs'); ?>"></textarea>
+
+				<div class="dbcg-tip">
+					<strong><?php echo esc_html__('Tip:', 'tools-for-devs'); ?></strong>
+					<?php echo esc_html__(
+						'After generating, paste the code into my-plugin.php, zip it, and upload it as a plugin. Always test on staging first.',
+						'tools-for-devs'
+					); ?>
+				</div>
+			</div>
+
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+
 
 }
