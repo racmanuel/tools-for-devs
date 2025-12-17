@@ -1,5 +1,4 @@
 <?php
-<?php
 /**
  * Plugin Name:       Tools for Developers
  * Plugin URI:        https://racmanuel.dev/plugins/tools-for-developers
