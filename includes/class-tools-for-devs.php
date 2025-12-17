@@ -126,85 +126,6 @@ class Tools_For_Devs
         require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/autoload.php';
 
         /**
-         * Load the Secure Custom Fields plugin manually if it's not already loaded.
-         *
-         * Checks if the ACF (Secure Custom Fields) class is already defined.
-         * If not, defines constants for its path and URL, then includes the main plugin file.
-         */
-        if (!class_exists('ACF')) {
-
-            /**
-             * Define the absolute filesystem path to the SCF plugin directory.
-             *
-             * @constant MY_SCF_PATH
-             */
-            define('MY_SCF_PATH', plugin_dir_path(dirname(__FILE__)) . 'vendor/secure-custom-fields/');
-
-            /**
-             * Define the URL path to the SCF plugin directory.
-             *
-             * @constant MY_SCF_URL
-             */
-            define('MY_SCF_URL', plugin_dir_url(dirname(__FILE__)) . 'vendor/secure-custom-fields/');
-
-            /**
-             * Include the main plugin file to bootstrap Secure Custom Fields functionality.
-             */
-            require_once MY_SCF_PATH . 'secure-custom-fields.php';
-        }
-
-        /**
-         * Load development-only plugins when debugging is enabled.
-         *
-         * This block ensures that tools like Query Monitor, WP Crontrol,
-         * User Switching, and Plugin Check are only loaded in environments
-         * where WP_DEBUG is set to true. This prevents unnecessary resource
-         * usage or exposure of sensitive tools in production.
-         */
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-
-            /**
-             * Load Query Monitor if it's not already loaded.
-             * Useful for debugging SQL queries, hooks, and performance.
-             */
-            if (!class_exists('QueryMonitor')) {
-                require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/query-monitor/query-monitor.php';
-            }
-
-            /**
-             * Load WP Crontrol if the constant is not already defined.
-             * This allows inspection and management of WP-Cron events.
-             */
-            if (!defined('WP_CRONTROL_VERSION')) {
-                require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/wp-crontrol/wp-crontrol.php';
-            }
-
-            /**
-             * Load User Switching if the class is not already loaded.
-             * Enables quickly switching between user accounts in admin.
-             */
-            if (!class_exists('user_switching')) {
-                require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/user-switching/user-switching.php';
-            }
-
-            /**
-             * Load Plugin Check if the version constant is not yet defined.
-             * Provides tools to validate plugin requirements and versions.
-             */
-            if (!defined('WP_PLUGIN_CHECK_VERSION')) {
-                require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/plugin-check/plugin.php';
-            }
-
-            /**
-             * Load Transients Manager if the class is not already loaded.
-             * Provides tools to manage transient options in WordPress.
-             */
-            if (!class_exists('Transients_Manager')) {
-                require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/transients-manager/transients-manager.php';
-            }
-        }
-
-        /**
          * The class responsible for orchestrating the actions and filters of the
          * core plugin.
          */
@@ -263,21 +184,6 @@ class Tools_For_Devs
 
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-
-        // Hook to modify SCF asset URL
-        $this->loader->add_filter('acf/assets_url', $plugin_admin, 'scf_fix_assets_url');
-
-        // Hook to define the path where JSON field groups are saved
-        $this->loader->add_filter('acf/settings/save_json', $plugin_admin, 'scf_json_save_point');
-
-        // Hook to define the path(s) from where JSON field groups are loaded
-        $this->loader->add_filter('acf/settings/load_json', $plugin_admin, 'scf_json_load_point');
-
-        // Hook to disable SCF admin menu
-        $this->loader->add_filter('acf/settings/show_admin', $plugin_admin, 'scf_show_admin_menu');
-
-        // Hook to disable SCF plugin update notifications
-        $this->loader->add_filter('acf/settings/show_updates', $plugin_admin, 'scf_show_updates');
     }
 
     /**
