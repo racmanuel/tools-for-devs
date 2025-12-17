@@ -88,7 +88,7 @@ class Tools_For_Devs
 
         }
 
-        $this->plugin_name   = 'tools-for-devs';
+        $this->plugin_name = 'tools-for-devs';
         $this->plugin_prefix = 'tools_for_devs_';
 
         $this->load_dependencies();
@@ -131,7 +131,7 @@ class Tools_For_Devs
          * Checks if the ACF (Secure Custom Fields) class is already defined.
          * If not, defines constants for its path and URL, then includes the main plugin file.
          */
-        if (! class_exists('ACF')) {
+        if (!class_exists('ACF')) {
 
             /**
              * Define the absolute filesystem path to the SCF plugin directory.
@@ -167,7 +167,7 @@ class Tools_For_Devs
              * Load Query Monitor if it's not already loaded.
              * Useful for debugging SQL queries, hooks, and performance.
              */
-            if (! class_exists('QueryMonitor')) {
+            if (!class_exists('QueryMonitor')) {
                 require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/query-monitor/query-monitor.php';
             }
 
@@ -175,7 +175,7 @@ class Tools_For_Devs
              * Load WP Crontrol if the constant is not already defined.
              * This allows inspection and management of WP-Cron events.
              */
-            if (! defined('WP_CRONTROL_VERSION')) {
+            if (!defined('WP_CRONTROL_VERSION')) {
                 require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/wp-crontrol/wp-crontrol.php';
             }
 
@@ -183,7 +183,7 @@ class Tools_For_Devs
              * Load User Switching if the class is not already loaded.
              * Enables quickly switching between user accounts in admin.
              */
-            if (! class_exists('user_switching')) {
+            if (!class_exists('user_switching')) {
                 require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/user-switching/user-switching.php';
             }
 
@@ -191,7 +191,7 @@ class Tools_For_Devs
              * Load Plugin Check if the version constant is not yet defined.
              * Provides tools to validate plugin requirements and versions.
              */
-            if (! defined('WP_PLUGIN_CHECK_VERSION')) {
+            if (!defined('WP_PLUGIN_CHECK_VERSION')) {
                 require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/plugin-check/plugin.php';
             }
 
@@ -199,7 +199,7 @@ class Tools_For_Devs
              * Load Transients Manager if the class is not already loaded.
              * Provides tools to manage transient options in WordPress.
              */
-            if (! class_exists('Transients_Manager')) {
+            if (!class_exists('Transients_Manager')) {
                 require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/transients-manager/transients-manager.php';
             }
         }
@@ -296,8 +296,10 @@ class Tools_For_Devs
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
 
         // Shortcode name must be the same as in shortcode_atts() third parameter.
-        $this->loader->add_shortcode($this->get_plugin_prefix() . 'shortcode', $plugin_public, 'tools_for_devs_shortcode_func');
+        $this->loader->add_shortcode($this->get_plugin_name() . '-shortcode', $plugin_public, 'tools_for_devs_shortcode_func');
 
+        $this->loader->add_shortcode($this->get_plugin_name() . '-migration-sql-tool', $plugin_public, 'tools_for_devs_shortcode_wp_migration_sql_tool');
+        $this->loader->add_shortcode($this->get_plugin_name() . '-db-prefix-tool', $plugin_public, 'tools_for_devs_shortcode_wp_db_prefix_tool');
     }
 
     /**
