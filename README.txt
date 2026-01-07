@@ -1,123 +1,184 @@
-=== Tools for Developers ===
-Contributors: racmanuel
-Donate link: https://racmanuel.dev/
-Tags: developer tools, sql, generator, rest api, woocommerce, database, acf, scf
-Requires at least: 6.9
-Tested up to: 6.9
-Stable tag: 1.0.0
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+# Tools for Developers
 
-A collection of practical generators for WordPress developers: SQL migration, DB prefix change, plugin headers, REST routes, ACF/SCF fields, and more.
+A collection of practical generators for **WordPress developers** to speed up common tasks such as SQL migrations, database operations, REST routes, plugin scaffolding, and custom fields.
 
-== Description ==
+**Tools for Developers** focuses on:
 
-**Tools for Developers** is a productivity plugin that provides a set of interactive generators to help WordPress developers create boilerplate code and SQL faster and more consistently.
+- ⚡ Productivity & consistency  
+- 🧠 Developer-friendly UI  
+- 🧾 Clean, readable generated output  
+- 📋 One-click copy to clipboard  
 
-The plugin focuses on **developer-friendly UI**, **readable output** (CodeMirror), and **one-click copy to clipboard**.
+---
 
-### Included generators
+## ✨ Features
 
-* **WordPress Migration SQL Generator**
-  Generate SQL queries to change site URLs when migrating a WordPress site to a new domain.
+This plugin provides a set of **interactive generators** that output ready-to-use **SQL queries** and **PHP boilerplate**, without executing anything automatically.
 
-  Shortcode:
-  `[tools-for-devs-migration-sql]`
+### Included Generators
 
-* **Database Prefix Generator**
-  Generate SQL queries to rename WordPress tables and update related keys. Includes optional multisite support and optional WooCommerce tables.
+#### 🗄️ WordPress Migration SQL Generator
+Generate SQL queries to safely update site URLs when migrating a WordPress installation to a new domain.
 
-  Shortcode:
-  `[tools-for-devs-db-prefix]`
+**Shortcode**
+```
+[tools-for-devs-migration-sql]
+```
 
-* **Plugin Header Generator**
-  Generate a WordPress plugin header block with common fields and optional requirements.
+---
 
-  Shortcode:
-  `[tools-for-devs-plugin-header-generator]`
+#### 🔁 Database Prefix Generator
+Generate SQL to rename WordPress tables and update related references.
 
-* **WooCommerce Delete Products SQL Generator**
-  Generate SQL queries to delete WooCommerce products (use with caution and always back up first).
+Supports:
+- Single site & multisite
+- Optional WooCommerce tables
 
-  Shortcode:
-  `[tools-for-devs-delete-products-sql]`
+**Shortcode**
+```
+[tools-for-devs-db-prefix]
+```
 
-* **ACF / SCF Field Generator**
-  Generate scaffolding/boilerplate for custom fields (ACF / Secure Custom Fields). Intended for developers building custom field types.
+---
 
-  Shortcode:
-  `[tools-for-devs-acf-field-generator]`
+#### 🧩 Plugin Header Generator
+Generate a complete WordPress plugin header block with common metadata and optional requirements.
 
-* **REST Route Generator**
-  Generate `register_rest_route()` boilerplate, with support for:
-  - permissions
-  - dynamic args
-  - path params `(?P<id>\d+)`
-  - optional Controller Class mode
-  - optional CRUD generation
-  - curl examples
+**Shortcode**
+```
+[tools-for-devs-plugin-header-generator]
+```
 
-  Shortcode:
-  `[tools-for-devs-rest-route-generator]`
+---
 
-* **Database CRUD Generator**
-  Generate `$wpdb` + `dbDelta()` boilerplate for custom tables with upgrades and basic CRUD helpers.
+#### 🛒 WooCommerce Delete Products SQL Generator
+Generate SQL queries to delete WooCommerce products.
 
-  Shortcode:
-  `[tools-for-devs-db-crud-generator]`
+> ⚠️ Use with caution. Always back up your database.
 
-### Notes
+**Shortcode**
+```
+[tools-for-devs-delete-products-sql]
+```
 
-* The generators **do not run SQL** automatically. They only output code/queries.
-* Always create a database backup before running generated SQL.
-* Some SQL operations can break serialized data if used incorrectly.
+---
 
-== Installation ==
+#### 🧱 ACF / SCF Field Generator
+Generate scaffolding for **custom field types** compatible with:
 
-1. Upload the plugin folder to the `/wp-content/plugins/` directory, or install it via the WordPress Plugins screen.
-2. Activate the plugin through the **Plugins** menu in WordPress.
+- Advanced Custom Fields (ACF)
+- Secure Custom Fields (SCF)
+
+Designed for developers building their own field types.
+
+**Shortcode**
+```
+[tools-for-devs-acf-field-generator]
+```
+
+---
+
+#### 🌐 REST Route Generator
+Generate `register_rest_route()` boilerplate with support for:
+
+- Permission callbacks
+- Dynamic arguments
+- Path parameters (`(?P<id>\d+)`)
+- Controller class mode
+- Optional CRUD generation
+- `curl` examples
+
+**Shortcode**
+```
+[tools-for-devs-rest-route-generator]
+```
+
+---
+
+#### 🗃️ Database CRUD Generator
+Generate `$wpdb` + `dbDelta()` boilerplate for custom database tables, including:
+
+- Table creation
+- Version upgrades
+- Basic CRUD helpers
+
+**Shortcode**
+```
+[tools-for-devs-db-crud-generator]
+```
+
+---
+
+## 🧠 Important Notes
+
+- ❌ **No SQL is executed automatically**
+- ✅ This plugin only **generates code**
+- 🛑 Always back up your database before running generated SQL
+- ⚠️ Incorrect SQL usage may break serialized data
+
+---
+
+## 📦 Installation
+
+1. Upload the plugin folder to `/wp-content/plugins/`, or install it via the WordPress admin.
+2. Activate the plugin from **Plugins → Installed Plugins**.
 3. Add any generator shortcode to a page or post.
 
-== Frequently Asked Questions ==
+---
 
-= Does this plugin modify my database automatically? =
+## 🌍 Internationalization
 
-No. The plugin only generates SQL/code. You decide when and where to execute it.
+All UI strings are prepared for translation using standard WordPress i18n functions.
 
-= Is this plugin safe to use on production? =
+---
 
-The plugin itself is safe because it only generates output. However, executing SQL on production can be risky. Always back up first and test changes on staging.
+## ❓ FAQ
 
-= Does it support translations? =
+### Does this plugin modify my database automatically?
+No. All generators output code or SQL only. You decide if and when to run it.
 
-Yes. All UI strings are prepared for translation.
+### Is it safe to use on production?
+The plugin itself is safe. However, executing SQL on production environments always carries risk. Test on staging first.
 
-= Does it work with Secure Custom Fields (SCF)? =
+### Does it support Secure Custom Fields (SCF)?
+Yes. The field generator is compatible with both ACF and SCF workflows.
 
-Yes. The field generator is designed to support ACF and SCF workflows.
+---
 
-== Screenshots ==
+## 🖼️ Screenshots
 
-1. Migration SQL Generator output with CodeMirror and copy-to-clipboard
-2. Database Prefix Generator (multisite + optional WooCommerce)
-3. REST Route Generator (Controller Class + CRUD options)
-4. Database CRUD Generator (dbDelta + upgrades)
-5. Plugin Header Generator
-6. ACF / SCF Field Generator
+1. Migration SQL Generator with CodeMirror and copy button  
+2. Database Prefix Generator (multisite + WooCommerce support)  
+3. REST Route Generator (Controller + CRUD mode)  
+4. Database CRUD Generator (`dbDelta` + upgrades)  
+5. Plugin Header Generator  
+6. ACF / SCF Field Generator  
 
-== Changelog ==
+---
 
-= 1.0.0 =
-* Initial release with 7 generators:
-  - Migration SQL
-  - DB Prefix
-  - Plugin Header Generator
-  - WooCommerce Delete Products SQL
-  - ACF / SCF Field Generator
-  - REST Route Generator
-  - DB CRUD Generator
+## 🧾 Changelog
 
-== Upgrade Notice ==
+### 1.0.0
+Initial release including 7 generators:
 
-= 1.0.0 =
-Initial public release.
+- Migration SQL Generator  
+- Database Prefix Generator  
+- Plugin Header Generator  
+- WooCommerce Delete Products SQL Generator  
+- ACF / SCF Field Generator  
+- REST Route Generator  
+- Database CRUD Generator  
+
+---
+
+## 📄 License
+
+Licensed under the **GPL v2 or later**  
+See https://www.gnu.org/licenses/gpl-2.0.html
+
+---
+
+## 👨‍💻 Author
+
+Developed by **Manuel Ramírez**  
+🌐 https://racmanuel.dev
